@@ -1,4 +1,5 @@
 from odoo import models, fields
+from . import estate_property_type
 from dateutil.relativedelta import relativedelta
 
 class EstateProperty(models.Model):
@@ -13,10 +14,9 @@ class EstateProperty(models.Model):
         ('Sold','Sold'),
         ('Canceled', 'Canceled')], 'State', default='New', required=True, copy=False
     )
-
     name = fields.Char(required=True)
     description = fields.Char()
-    postcode = fields.Char()
+    postcode = fields.Char(help=None)
     date_availability = fields.Date(copy=False, default=lambda self: fields.Datetime.now() + relativedelta(months=3))
     expected_price = fields.Float(required=True)
     selling_price = fields.Float(readonly=True, copy=False)
@@ -29,3 +29,6 @@ class EstateProperty(models.Model):
     garden_orientation = fields.Selection(
         selection=[('North', 'North'), ('South', 'South'), ('East', 'East'), ('West','West')]
     )
+    estate_property_type_id = fields.Many2one("estate.property.type", string="Building's type")
+    buyer_id = fields.Many2one("res.partner", string="Buyer's name")
+    salesperson_id = fields.Many2one("res.users", string="seller's name", default=lambda self: self.env.user)
